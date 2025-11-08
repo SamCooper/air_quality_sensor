@@ -21,7 +21,8 @@ const char *password = "xxxx";  // Change this to your WiFi password
 SparkFunBMV080 bmv080;  // Create an instance of the BMV080 class
 Adafruit_BME280 bme;
 
-unsigned long delayTime = 5000;
+unsigned long delayTime = 1000;
+unsigned long dutyCycleTimeS = 15;
 
 typedef struct {
   uint16_t pm1;
@@ -163,7 +164,7 @@ void setupSensors() {
   bmv080.init();
 
   /* Set the sensor mode to continuous mode */
-  bmv080.setDutyCyclingPeriod(delayTime / 1000);
+  bmv080.setDutyCyclingPeriod(dutyCycleTimeS);
 
   if (bmv080.setMode(SF_BMV080_MODE_DUTY_CYCLE) == true) {
     Serial.println("BMV080 set to cycle mode");
