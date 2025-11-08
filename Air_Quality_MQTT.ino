@@ -8,15 +8,16 @@
 #include "SparkFun_BMV080_Arduino_Library.h"  // CTRL+Click here to get the library: http://librarymanager/All#SparkFun_BMV080
 #include "mqtt-sn.h"
 
+// wifi_secrets.h must contain the following
+//const char *ssid = "xxxx";   // Change this to your WiFi SSID
+//const char *password = "xxxx";  // Change this to your WiFi password
+#include "wifi_secrets.h"
+
 #define BMV080_ADDR 0x57  // SparkFun BMV080 Breakout defaults to 0x57
 
 #define LOCATION_WOOD_SHOP_MAIN 110
 #define BROADCAST_WOOD_SHOP_MAIN "env/b/pm/v1.0.0/ws/main"
 
-
-// WiFi is manually set and started
-const char *ssid = "xxxx";   // Change this to your WiFi SSID
-const char *password = "xxxx";  // Change this to your WiFi password
 
 SparkFunBMV080 bmv080;  // Create an instance of the BMV080 class
 Adafruit_BME280 bme;
