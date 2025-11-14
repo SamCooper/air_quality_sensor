@@ -30,6 +30,9 @@ void setupSensors() {
 
   /* Set the sensor mode to continuous mode */
   bmv080.setDutyCyclingPeriod(dutyCycleTimeS);
+  
+  // switch off obstruction monitoring
+  bmv080.setDoObstructionDetection(false);
 
   if (bmv080.setMode(SF_BMV080_MODE_DUTY_CYCLE) == true) {
     Serial.println("BMV080 set to cycle mode");
