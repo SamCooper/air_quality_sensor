@@ -1,7 +1,9 @@
 #include <WiFi.h>
+#include <NTPClient.h>
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
+#include <CircularBuffer.hpp>
 
 #include "SparkFun_BMV080_Arduino_Library.h"  // CTRL+Click here to get the library: http://librarymanager/All#SparkFun_BMV080
 #include "mqtt-sn.h"
@@ -17,19 +19,23 @@
 #define BROADCAST_WOOD_SHOP_MAIN "env/b/pm/v1.0.0/ws/main"
 
 typedef struct {
+  uint64_t timestamp;
   uint16_t pm1;
   uint16_t pm2_5;
   uint16_t pm10;
   int16_t temperature;
   uint16_t relative_humidity;
   uint16_t pressure;
-  uint16_t flags;
   uint16_t location;
 } env_pm_record;
 
 const unsigned long delayTime = 1000;
 const unsigned long dutyCycleTimeS = 15;
+const int bufferSize = (6 * 60 * 60) / dutyCycleTimeS; // every duty cycle time in 6h
 
+CircularBuffer<env_pm_record, bufferSize> ringBuffer;
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
 SparkFunBMV080 bmv080;  // Create an instance of the BMV080 class
 Adafruit_BME280 bme;
 
@@ -43,11 +49,17 @@ void setup() {
 
   setupWiFi();
 
+  timeClient.begin();
+
   setupMQTT();
 }
 
 void loop() {
+  timeClient.update();
+
   if (bmv080.readSensor()) {
+    uint64_t timestamp = timeClient.getEpochTime();
+
     float pm10 = bmv080.PM10();
     float pm25 = bmv080.PM25();
     float pm1 = bmv080.PM1();
@@ -59,7 +71,7 @@ void loop() {
 
     printValues(pm1, pm25, pm10, temp, pressure, humidity, obstructed);
 
-    sendValues(pm1, pm25, pm10, temp, pressure, humidity, obstructed);
+    sendValues(timestamp, pm1, pm25, pm10, temp, pressure, humidity, obstructed);
   }
 
   delay(delayTime);
