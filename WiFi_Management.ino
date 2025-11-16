@@ -17,10 +17,11 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info){
 }
 
 void setupWiFi(){
+  Serial.println("Starting WiFi... ");
   WiFi.mode(WIFI_STA);
 
-  WiFi.onEvent(WiFiStationConnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_CONNECTED);
-  WiFi.onEvent(WiFiGotIP, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
+  // WiFi.onEvent(WiFiStationConnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_CONNECTED);
+  // WiFi.onEvent(WiFiGotIP, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
   WiFi.onEvent(WiFiStationDisconnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
 
   WiFi.begin(ssid, password);
@@ -29,11 +30,9 @@ void setupWiFi(){
   Serial.println();
   Serial.println("Wait for WiFi... ");
 
-  if (WiFi.waitForConnectResult() != WL_CONNECTED) {
+  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     Serial.println("WiFi Failed");
-    while (1) {
       delay(1000);
-    }
   }
 
   Serial.print("WiFi connected: ");

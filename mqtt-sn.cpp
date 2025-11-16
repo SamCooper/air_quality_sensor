@@ -37,7 +37,7 @@ esp_err_t mqtt_sn_init() {
         mqtt_sn_config.server_broadcast.sin_family = AF_INET;
         mqtt_sn_config.server_broadcast.sin_port = htons(CONFIG_MQTT_SN_PORT_BROADCAST);
 
-        if (!inet_pton(AF_INET, "255.255.255.255", &mqtt_sn_config.server_broadcast.sin_addr)) {
+        if (!inet_pton(AF_INET, CONFIG_MQTT_SN_IP_BROADCAST, &mqtt_sn_config.server_broadcast.sin_addr)) {
             ESP_LOGE(TAG, "broadcast address error");
         }
 
@@ -65,7 +65,7 @@ bool mqtt_sn_is_ready() {
 }
 
 void mqtt_sn_connect() {
-    uint8_t *message = mqtt_sn_config.message_buffer;
+    uint8_t *message = mqtt_sn_config.task_buffer;
 
     message[0] = 6 + (MACHINE_MAC_LEN * 2) + 1;
     message[1] = MQTT_SN_MESSAGE_TYPE_CONNECT;
