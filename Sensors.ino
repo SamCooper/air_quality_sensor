@@ -77,6 +77,7 @@ bool readSensor(data_record &to_send) {
 }
 
 void printValues(float pm1, float pm25, float pm10, float temp, float pressure, float humidity, bool obstructed) {
+  Serial.println();
   Serial.print("Temperature:");
   Serial.print(temp);
 

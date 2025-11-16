@@ -25,6 +25,9 @@ void sendValues(data_record &to_send) {
   hexDump(&to_send, sizeof(to_send));
 
   if (WiFi.isConnected()) {
+    Serial.print("MQTT sending: ");
+    Serial.println(ringBuffer.size());
+
     while (!ringBuffer.isEmpty()) {
       data_record hd_send;
       hd_send = ringBuffer.shift();
@@ -32,6 +35,9 @@ void sendValues(data_record &to_send) {
       mqtt_sn_send_with_mac(MQTT_SN_MESSAGE_ENV_PM, &hd_send, sizeof(hd_send));
       mqtt_sn_broadcast_with_mac(BROADCAST_WOOD_SHOP_MAIN, strlen(BROADCAST_WOOD_SHOP_MAIN), &hd_send, sizeof(hd_send));
     }
+  } else {
+    Serial.print("No WiFi, appending to buffer, current size: ");
+    Serial.println(ringBuffer.size());
   }
 }
 

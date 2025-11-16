@@ -68,6 +68,6 @@ void loop() {
     sendValues(to_send);
   }
 
-  Serial.println("Loop...");
+  Serial.print(".");
   delay(delayTime);
 }
